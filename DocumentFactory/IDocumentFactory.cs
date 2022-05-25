@@ -286,7 +286,7 @@ namespace DocumentFactory
         {
             //var tempData = (MarkDownElement)newElement;
             content.Add((MarkDownElement)newElement);
-        }
+        } 
     }
 }
 
