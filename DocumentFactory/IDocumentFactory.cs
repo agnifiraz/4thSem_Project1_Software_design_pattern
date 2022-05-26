@@ -27,9 +27,8 @@ namespace DocumentFactory
         }
         public override string ToString()
         {
-            int i = 1;
             var temp = theData.Split(';');
-            return $"<h{i}>" + temp[1] + $"</h{i}>";
+            return $"<h{temp[0]}>" + temp[1] + $"</h{temp[0]}>";
         }
     }
 
@@ -43,7 +42,8 @@ namespace DocumentFactory
         public override string ToString()
         {
             var temp = theData.Split(';');
-            return "Image";
+            return "<img src=\""+  temp[0] + "\" alt=\"" + temp[1] + "\" title=\"" + temp[2] + "\">";
+            
         }
     }
 
@@ -57,7 +57,16 @@ namespace DocumentFactory
         public override string ToString()
         {
             var temp = theData.Split(';');
-            return "List";
+
+            //return "<img src=\"" + temp[0] + "\" alt=\"" + temp[1] + "\" title=\"" + temp[2] + "\">";
+            if (temp[0]== "Ordered")
+            {
+                return "<ol>"+ "<li>" + temp[1]+"</li>" + "<li>" + temp[2] + "</li>"+ "<li>" + temp[3] + "</li></ol>";
+            }
+            else
+            {
+                return "<ul>"+ "<li>" + temp[1] + "</li>" + "<li>" + temp[2] + "</li>" + "<li>" + temp[3] + "</li></ul>";
+            }
         }
     }
     public class HTMLTableElement : HTMLElement
@@ -70,7 +79,20 @@ namespace DocumentFactory
         public override string ToString()
         {
             var temp = theData.Split(';');
-            return "Table";
+            String allInfo = "";
+            foreach (var command in temp)
+            {
+                var tableinfo = command.Split('$');
+                if (tableinfo[0] == "Head")
+                {
+                    allInfo = allInfo + $"<thead><tr><th> {tableinfo[1]} </th><th> {tableinfo[2]} </th><th> {tableinfo[3]} </th></tr></thead><tbody>";
+                }
+                else
+                {
+                    allInfo = allInfo + $"<tr><td> {tableinfo[1]} </td><td> {tableinfo[2]} </td><td> {tableinfo[3]} </td></tr>";
+                }
+            }
+            return "<table>" +allInfo + "</tbody></ table >";
         }
     }
     public class HTMLFactory : IDocumentFactory
@@ -80,7 +102,8 @@ namespace DocumentFactory
         public IDocument CreateDocument(string fileName)
         {
             htmlDocument = new HTMLDocument(fileName);
-            File.Create(fileName);
+            var fileCreation = File.Create(fileName);
+            fileCreation.Close();
             return htmlDocument;
         }
         public IElement CreateElement(string elementType, string data)
@@ -140,15 +163,16 @@ namespace DocumentFactory
         {
             var tempEl = (HTMLElement)newElement;
             content.Add(tempEl);
-        }
-        public void RunDocument()
-        {
             for (int i = 0; i < content.Count; i++)
             {
                 allContent = allContent + content[i].ToString() + "\n";
             }
+
             File.WriteAllText(fileName, allContent);
-            System.Diagnostics.Process.Start("chrome.exe", fileName);
+        }
+        public void RunDocument()
+        {
+            System.Diagnostics.Process.Start($"{Directory.GetCurrentDirectory()}\\{fileName}", "chrome.exe");
         }
         public static HTMLDocument GetInstance()
         {
@@ -170,7 +194,7 @@ namespace DocumentFactory
         public override string ToString()
         {
             var temp = theData.Split(';');
-            return $"<h{temp[0]}>" + theData[1] + $"</h{temp[0]}>";
+            return $"<h{temp[0]}>" + temp[1] + $"</h{temp[0]}>";
         }
     }
 
@@ -221,7 +245,9 @@ namespace DocumentFactory
         public IDocument CreateDocument(string fileName)
         {
             markDownDocument = new MarkDownDocument(fileName);
-            File.Create(fileName);
+            var fileCreation = File.Create(fileName);
+            fileCreation.Close();
+
             return markDownDocument;
         }
         public IElement CreateElement(string elementType, string data)
@@ -275,18 +301,21 @@ namespace DocumentFactory
 
         public void RunDocument()
         {
-            for (int i = 0; i < content.Count; i++)
-            {
-                allContent = allContent + content[i].ToString() + "\n";
-            }
-            File.WriteAllText(fileName, allContent);
-            System.Diagnostics.Process.Start("chrome.exe", fileName);
+            
+            System.Diagnostics.Process.Start($"{Directory.GetCurrentDirectory()}\\{fileName}", "chrome.exe");
         }
         public void AddElement(IElement newElement)
         {
             //var tempData = (MarkDownElement)newElement;
             content.Add((MarkDownElement)newElement);
-        } 
+            for (int i = 0; i < content.Count; i++)
+            {
+                allContent = allContent + content[i].ToString() + "\n";
+            }
+
+            File.WriteAllText(fileName, allContent);
+
+        }
     }
 }
 

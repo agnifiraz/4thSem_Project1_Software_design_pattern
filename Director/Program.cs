@@ -14,110 +14,66 @@ namespace Director
 
         static void Main(string[] args)
         {
-            int count = 0;
-            string doctype = "";
+            //int count = 0;
+            //string doctype = "";
             string[] commands;
-            var list = File.ReadAllText("Test.txt");
+            var list = File.ReadAllText("CreateDocumentScript.txt");
             commands = list.Split('#');
-
+            bool htmlelement = false;
+            bool markelement= false;
             foreach (var command in commands)
             {
-                count++;
                 var strippedCommand = Regex.Replace(command, @"\t|\n|\r", "");
-                var commandList = strippedCommand.Split(':', ';');
-                if (count == 1)
+                var commandList = strippedCommand.Split(':');
+
+                switch (commandList[0])
                 {
-                    doctype = commandList[1];
-                }
-                switch (doctype)
-                {
-                    case "Markdown":
-                        switch (commandList[0])
+                    case "Document":
+                        var oneWord = commandList[1].Split(';');
+                        if (oneWord[0] == "Markdown")
                         {
-                            case "Document":
-                                MarkDownFactory.GetInstance();
-                                MarkDownFactory.markDownFactory.CreateDocument(commandList[2]);
-                                break;
-                            case "Element":
-                                //MarkDownFactory.GetInstance();
-                                //MarkDownFactory.markDownFactory.CreateElement(commandList[1], commandList[3]);
-                                break;
-                            case "Run":
-                                count = 0;
-                                break;
-                            default:
-                                break;
+                            htmlelement = false;
+                            markelement = true;
+                            MarkDownFactory.GetInstance();
+                            MarkDownFactory.markDownFactory.CreateDocument(oneWord[1]);
                         }
-                        break;
-                    case "Html":
-                        switch (commandList[0])
+                        else if (oneWord[0] == "Html")
                         {
-                            case "Document":
-                                HTMLFactory.GetInstance();
-                                HTMLFactory.htmlFactory.CreateDocument(commandList[2]);
-                                break;
-                            case "Element":
-                                //HTMLFactory.GetInstance();
-                                HTMLFactory.htmlFactory.CreateElement(commandList[1], commandList[3]);
-                                break;
-                            case "Run":
-                                HTMLDocument.GetInstance();
-                                HTMLDocument.htmlDocument.RunDocument();
-                                count = 0;
-                                break;
-                            default:
-                                break;
+                            htmlelement = true;
+                            markelement = false;
+                            HTMLFactory.GetInstance();
+                            HTMLFactory.htmlFactory.CreateDocument(oneWord[1]);
+                        }
+
+                        break;
+                    case "Element":
+                       
+                            if (markelement == true)
+                            {
+                                MarkDownFactory.markDownFactory.CreateElement(commandList[1], commandList[2]);
+
+                            }
+                            else if (htmlelement == true)
+                            {
+                                HTMLFactory.htmlFactory.CreateElement(commandList[1], commandList[2]);
+                            }
+                       
+                        break;
+                    case "Run":
+                        if (markelement == true)
+                        {
+                            //wwwww
+                        }
+                        else if (htmlelement == true)
+                        {
+                            HTMLDocument.GetInstance();
+                            HTMLDocument.htmlDocument.RunDocument();
                         }
                         break;
                     default:
                         break;
-                }
+                }          
             }
         }
     }
 }
-
-
-
-
-//using System;
-//using System.Collections.Generic;
-//using System.IO;
-//using System.Linq;
-//using System.Text;
-//using System.Text.RegularExpressions;
-//using System.Threading.Tasks;
-
-//namespace Director
-//{
-//    class Program
-//    {
-
-//        static void Main(string[] args)
-//        {
-//            string[] commands;
-//            var list = File.ReadAllText("CreateDocumentScript.txt");
-//            commands = list.Split('#');
-
-//            foreach (var command in commands)
-//            {
-//                var strippedCommand = Regex.Replace(command, @"\t|\n|\r", "");
-//                var commandList = strippedCommand.Split(':');
-//                switch (commandList[0])
-//                {
-//                    case "Document":
-//                        // Your document creation code goes here
-//                        break;
-//                    case "Element":
-//                        // Your element creation code goes here
-//                        break;
-//                    case "Run":
-//                        // Your document running code goes here
-//                        break;
-//                    default:
-//                        break;
-//                }
-//            }
-//        }
-//    }
-//}
