@@ -21,6 +21,7 @@ namespace Director
             commands = list.Split('#');
             bool htmlelement = false;
             bool markelement= false;
+            //int check = 1;
             foreach (var command in commands)
             {
                 var strippedCommand = Regex.Replace(command, @"\t|\n|\r", "");
@@ -47,16 +48,17 @@ namespace Director
 
                         break;
                     case "Element":
-                       
-                            if (markelement == true)
-                            {
-                                MarkDownFactory.markDownFactory.CreateElement(commandList[1], commandList[2]);
 
-                            }
-                            else if (htmlelement == true)
-                            {
-                                HTMLFactory.htmlFactory.CreateElement(commandList[1], commandList[2]);
-                            }
+                        if (markelement == true)
+                        {                                                      
+                             MarkDownFactory.markDownFactory.CreateElement(commandList[1], commandList[2]);
+
+                        }
+                        else if (htmlelement == true)
+                        {
+                            HTMLFactory.htmlFactory.CreateElement(commandList[1], commandList[2]);
+
+                        }
                        
                         break;
                     case "Run":

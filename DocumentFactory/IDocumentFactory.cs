@@ -125,6 +125,7 @@ namespace DocumentFactory
                     break;
                 default:
                     break;
+            //break;
             }
             htmlDocument.AddElement(element);
             return element;
@@ -163,7 +164,7 @@ namespace DocumentFactory
         {
             var tempEl = (HTMLElement)newElement;
             content.Add(tempEl);
-            for (int i = 0; i < content.Count; i++)
+            for (int i = content.Count-1; i < content.Count; i++)
             {
                 allContent = allContent + content[i].ToString() + "\n";
             }
