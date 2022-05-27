@@ -1,36 +1,24 @@
-Image
-Image
-<h1>The Header</h1>
-Image
-<h1>The Header</h1>
-<h2>List One</h2>
-Image
-<h1>The Header</h1>
-<h2>List One</h2>
-List
-Image
-<h1>The Header</h1>
-<h2>List One</h2>
-List
-<h2>List Two</h2>
-Image
-<h1>The Header</h1>
-<h2>List One</h2>
-List
-<h2>List Two</h2>
-List
-Image
-<h1>The Header</h1>
-<h2>List One</h2>
-List
-<h2>List Two</h2>
-List
-<h3>And then a table</h3>
-Image
-<h1>The Header</h1>
-<h2>List One</h2>
-List
-<h2>List Two</h2>
-List
-<h3>And then a table</h3>
-Table
+![Alt Text](img/csharp.png "Title Text")
+
+# The Header
+
+## List One
+
+1. Item 1
+2. Item 2
+3. Item 3
+
+## List Two
+
+* Item 1
+* Item 2
+* Item 3
+
+### And then a table
+
+| Table Heading 1 | Table Heading 2 | Table Heading 3 | 
+| --- | --- | --- |
+| Some | Table | Text | 
+| More | Table | Text | 
+| Final | Table | Text | 
+

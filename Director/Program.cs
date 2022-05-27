@@ -64,7 +64,8 @@ namespace Director
                     case "Run":
                         if (markelement == true)
                         {
-                            //wwwww
+                            MarkDownDocument.GetInstance();
+                            MarkDownDocument.markDownDocument.RunDocument();
                         }
                         else if (htmlelement == true)
                         {

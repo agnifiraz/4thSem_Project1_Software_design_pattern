@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
+
 namespace DocumentFactory
 {
     public interface IDocument
@@ -28,7 +29,7 @@ namespace DocumentFactory
         public override string ToString()
         {
             var temp = theData.Split(';');
-            return $"<h{temp[0]}>" + temp[1] + $"</h{temp[0]}>";
+            return $"<h{temp[0]}>" + temp[1] + $"</h{temp[0]}>" + "\n";
         }
     }
 
@@ -195,7 +196,13 @@ namespace DocumentFactory
         public override string ToString()
         {
             var temp = theData.Split(';');
-            return $"<h{temp[0]}>" + temp[1] + $"</h{temp[0]}>";
+            string val = "";
+            int intValue = int.Parse(temp[0]);
+            for (int i=0; i < intValue;i++)
+            {
+                val=val + "#";
+            }
+            return  val+ " "+ temp[1] + "\n" ;
         }
     }
 
@@ -209,7 +216,8 @@ namespace DocumentFactory
         public override string ToString()
         {
             var temp = theData.Split(';');
-            return "Image";
+            return $"![{temp[1]}]({temp[0]} \"{temp[2]}\")" + "\n";
+
         }
     }
 
@@ -223,7 +231,15 @@ namespace DocumentFactory
         public override string ToString()
         {
             var temp = theData.Split(';');
-            return "List";
+
+            if (temp[0] == "Ordered")
+            {
+                return "1. " + temp[1] + "\n" + "2. " + temp[2] + "\n" + "3. " + temp[3] + "\n";
+            }
+            else
+            {
+                return "* " + temp[1] + "\n"+ "* " + temp[2] + "\n" + "* " + temp[3] + "\n";
+            }
         }
     }
     public class MarkDownTableElement : MarkDownElement
@@ -236,7 +252,20 @@ namespace DocumentFactory
         public override string ToString()
         {
             var temp = theData.Split(';');
-            return "Table";
+            String allInfo = "";
+            foreach (var command in temp)
+            {
+                var tableinfo = command.Split('$');
+                if (tableinfo[0] == "Head")
+                {
+                    allInfo = allInfo + "| " + tableinfo[1]+ " | " + tableinfo[2] + " | " +tableinfo[3] + " | " + "\n" + "| --- | --- | --- |" +"\n";
+                }
+                else
+                {
+                    allInfo = allInfo + $"| {tableinfo[1]} | {tableinfo[2]} | {tableinfo[3]} | \n";
+                }
+            }
+            return  allInfo;
         }
     }
     public class MarkDownFactory : IDocumentFactory
@@ -292,6 +321,7 @@ namespace DocumentFactory
     }
     public class MarkDownDocument : IDocument
     {
+        public static MarkDownDocument markDownDocument;
         private string fileName;
         List<MarkDownElement> content = new List<MarkDownElement>();
         string allContent = "";
@@ -299,6 +329,7 @@ namespace DocumentFactory
         {
             this.fileName = fileName;
         }
+        public MarkDownDocument() { }
 
         public void RunDocument()
         {
@@ -309,13 +340,22 @@ namespace DocumentFactory
         {
             //var tempData = (MarkDownElement)newElement;
             content.Add((MarkDownElement)newElement);
-            for (int i = 0; i < content.Count; i++)
+            for (int i = content.Count-1; i < content.Count; i++)
             {
                 allContent = allContent + content[i].ToString() + "\n";
             }
 
             File.WriteAllText(fileName, allContent);
 
+        }
+
+        public static MarkDownDocument GetInstance()
+        {
+            if(markDownDocument == null)
+            {
+                markDownDocument = new MarkDownDocument();
+            }
+            return markDownDocument;
         }
     }
 }
